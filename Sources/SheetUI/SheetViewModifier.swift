@@ -53,7 +53,7 @@ struct SheetViewModifier<ContentView: View>: ViewModifier {
     }
 }
 
-extension View {
+public extension View {
     func presentBottomSheet<SheetContent: View>(
         isPresented: Binding<Bool>,
         @ViewBuilder sheetContent: () -> SheetContent
