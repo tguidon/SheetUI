@@ -12,6 +12,7 @@ import UIKit
 struct SheetViewModifier<ContentView: View>: ViewModifier {
     @Binding private var isPresented: Bool
     private let style: SheetViewStyle
+    private let onDismiss: (() -> Void)?
     private let contentView: ContentView
     
     @State private var sheetViewController: SheetViewController<ContentView>?
@@ -19,10 +20,12 @@ struct SheetViewModifier<ContentView: View>: ViewModifier {
     init(
         isPresented: Binding<Bool>,
         style: SheetViewStyle,
+        onDismiss: (() -> Void)?,
         @ViewBuilder contentView: () -> ContentView
     ) {
         self._isPresented = isPresented
         self.style = style
+        self.onDismiss = onDismiss
         self.contentView = contentView()
     }
     
@@ -48,10 +51,10 @@ struct SheetViewModifier<ContentView: View>: ViewModifier {
                 content: self.contentView
             )
             if let sheetViewController = self.sheetViewController {
-                presentingController.present(sheetViewController, animated: true, completion: nil)
+                presentingController.present(sheetViewController, animated: true)
             }
         } else {
-            sheetViewController?.dismiss(animated: true, completion: nil)
+            sheetViewController?.dismiss(animated: true, completion: self.onDismiss)
             sheetViewController = nil
         }
     }
@@ -61,12 +64,14 @@ public extension View {
     func presentSheet<ContentView: View>(
         isPresented: Binding<Bool>,
         style: SheetViewStyle = .standard,
+        onDismiss: (() -> Void)? = nil,
         @ViewBuilder contentView: () -> ContentView
     ) -> some View {
         self.modifier(
             SheetViewModifier(
                 isPresented: isPresented,
                 style: style,
+                onDismiss: onDismiss,
                 contentView: contentView
             )
         )
