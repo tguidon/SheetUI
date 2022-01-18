@@ -54,14 +54,14 @@ struct SheetViewModifier<ContentView: View>: ViewModifier {
 }
 
 public extension View {
-    func presentBottomSheet<SheetContent: View>(
+    func presentSheet<ContentView: View>(
         isPresented: Binding<Bool>,
-        @ViewBuilder sheetContent: () -> SheetContent
+        @ViewBuilder contentView: () -> ContentView
     ) -> some View {
         self.modifier(
             SheetViewModifier(
                 isPresented: isPresented,
-                contentView: sheetContent
+                contentView: contentView
             )
         )
     }
