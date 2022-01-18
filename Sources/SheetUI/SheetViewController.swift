@@ -30,9 +30,10 @@ class SheetViewController<Content: View>: UIViewController, UIViewControllerTran
     }()
     /// The point of origin when the view is first rendered
     private var originPoint: CGPoint?
-    /// The velocity threshold at which to determine if the view should be dismissed
-    private let targetVelocity: CGFloat = 1000
-    private let targetSwipeDistance: CGFloat = 40
+    /// Dismiss the view if the content has been swiped down at least 25%
+    private var targetSwipeDistance: CGFloat {
+        return self.containerView.frame.height * 0.25
+    }
     
     init(
         isPresented: Binding<Bool>,
@@ -71,7 +72,7 @@ class SheetViewController<Content: View>: UIViewController, UIViewControllerTran
             containerView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
             containerView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
 
-            hostingViewController.view.topAnchor.constraint(greaterThanOrEqualTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 40),
+            hostingViewController.view.topAnchor.constraint(greaterThanOrEqualTo: self.view.safeAreaLayoutGuide.topAnchor, constant: self.style.topSpacing),
             hostingViewController.view.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
             hostingViewController.view.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
             hostingViewController.view.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor)
@@ -143,7 +144,7 @@ class SheetViewController<Content: View>: UIViewController, UIViewControllerTran
             }
             
             let velocity = gesture.velocity(in: self.view)
-            if velocity.y > self.targetVelocity {
+            if velocity.y > self.style.targetVelocity {
                 self.dismiss(animated: true, completion: nil)
             } else if translation.y > self.targetSwipeDistance {
                 self.dismiss(animated: true, completion: nil)
