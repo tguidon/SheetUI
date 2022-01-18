@@ -14,8 +14,9 @@ class SheetViewController<Content: View>: UIViewController, UIViewControllerTran
     // MARK: - Properties
 
     @Binding private var isPresented: Bool
-    /// This value should match the background of the given `Content` for best results
-    private let backgroundColor: UIColor
+    /// The style to apply to the sheet presentation. For best results, use a `backgroundColor` that matches
+    /// the given SwiftUI content.
+    private let style: SheetViewStyle
     /// The SwiftUI content to render in the presented sheet
     private let content: Content
     /// The `UIHostingController` responsible for rendering the `content` and managing auto layout
@@ -24,7 +25,7 @@ class SheetViewController<Content: View>: UIViewController, UIViewControllerTran
     private lazy var containerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = self.backgroundColor
+        view.backgroundColor = self.style.backgroundColor
         return view
     }()
     /// The point of origin when the view is first rendered
@@ -35,14 +36,14 @@ class SheetViewController<Content: View>: UIViewController, UIViewControllerTran
     
     init(
         isPresented: Binding<Bool>,
-        backgroundColor: UIColor = .systemBackground,
+        style: SheetViewStyle,
         content: Content
     ) {
         self._isPresented = isPresented
         self.content = content
         self.hostingViewController = UIHostingController(rootView: content)
         self.hostingViewController.view.translatesAutoresizingMaskIntoConstraints = false
-        self.backgroundColor = backgroundColor
+        self.style = style
 
         super.init(nibName: nil, bundle: nil)
         
