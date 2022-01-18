@@ -12,7 +12,15 @@ class SheetPresentationController: UIPresentationController {
     private let cornerRadius: CGFloat = 20
     private let presentationTransform = CGAffineTransform(scaleX: 0.95, y: 0.95)
     
-    override init(presentedViewController: UIViewController, presenting presentingViewController: UIViewController?) {
+    private let style: SheetViewStyle
+    
+    init(
+        presentedViewController: UIViewController,
+        presenting presentingViewController: UIViewController?,
+        style: SheetViewStyle
+    ) {
+        self.style = style
+
         super.init(presentedViewController: presentedViewController, presenting: presentingViewController)
         
         self.containerView?.backgroundColor = .clear

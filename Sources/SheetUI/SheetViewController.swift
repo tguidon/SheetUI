@@ -111,9 +111,9 @@ class SheetViewController<Content: View>: UIViewController, UIViewControllerTran
     
     // MARK: - Setup Methods
     
-    /// On tap of the main view, the content behind the sheet, dismiss the view if `isModalInPresentation` is `false`
+    /// On tap of the main view, the content behind the sheet, dismiss the view if `style.isModalInPresentation` is `false`
     @objc private func tappedView() {
-        if self.isModalInPresentation {
+        if self.style.isModalInPresentation {
             return
         }
 
@@ -137,26 +137,35 @@ class SheetViewController<Content: View>: UIViewController, UIViewControllerTran
         
         switch gesture.state {
         case .ended:
+            if style.isModalInPresentation {
+                animateViewToOriginPoint()
+                return
+            }
+            
             let velocity = gesture.velocity(in: self.view)
             if velocity.y > self.targetVelocity {
                 self.dismiss(animated: true, completion: nil)
-            }
-            
-            if translation.y > self.targetSwipeDistance {
+            } else if translation.y > self.targetSwipeDistance {
                 self.dismiss(animated: true, completion: nil)
-            } else if let originPoint = self.originPoint {
-                UIView.animate(
-                    withDuration: 0.3,
-                    delay: 0.0,
-                    options: [.allowUserInteraction]
-                ) {
-                    self.view.frame.origin = originPoint
-                }
             } else {
-                self.dismiss(animated: true, completion: nil)
+                animateViewToOriginPoint()
             }
         default:
             break
+        }
+    }
+    
+    private func animateViewToOriginPoint() {
+        guard let originPoint = self.originPoint else {
+            return
+        }
+
+        UIView.animate(
+            withDuration: 0.3,
+            delay: 0.0,
+            options: [.allowUserInteraction]
+        ) {
+            self.view.frame.origin = originPoint
         }
     }
     
@@ -167,7 +176,7 @@ class SheetViewController<Content: View>: UIViewController, UIViewControllerTran
         presenting: UIViewController?,
         source: UIViewController
     ) -> UIPresentationController? {
-        return SheetPresentationController(presentedViewController: presented, presenting: presenting)
+        return SheetPresentationController(presentedViewController: presented, presenting: presenting, style: self.style)
     }
     
     // MARK: - UIGestureRecognizerDelegate
