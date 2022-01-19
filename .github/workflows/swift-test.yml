@@ -1,4 +1,4 @@
-name: Swift
+name: Swift Test
 
 on: push
 
@@ -10,6 +10,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build
-      run: xcodebuild -scheme SheetUI -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 13 Pro,OS=15.2' build
+      run: xcodebuild -scheme SheetUI -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 13 Pro,OS=15.0' build
     - name: Run tests
-      run: xcodebuild -scheme SheetUI -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 13 Pro,OS=15.2' test
+      run: xcodebuild -scheme SheetUI -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 13 Pro,OS=15.0' test
