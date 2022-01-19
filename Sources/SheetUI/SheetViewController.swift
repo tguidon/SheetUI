@@ -20,7 +20,7 @@ class SheetViewController<Content: View>: UIViewController, UIViewControllerTran
     /// The SwiftUI content to render in the presented sheet
     private let content: Content
     /// The `UIHostingController` responsible for rendering the `content` and managing auto layout
-    private let hostingViewController: UIHostingController<Content>
+    private let hostingViewController: HostingController<Content>
     /// Backing `UIView` intended to cover the safe area on phones with safe areas
     private lazy var containerView: UIView = {
         let view = UIView()
@@ -42,7 +42,7 @@ class SheetViewController<Content: View>: UIViewController, UIViewControllerTran
     ) {
         self._isPresented = isPresented
         self.content = content
-        self.hostingViewController = UIHostingController(rootView: content)
+        self.hostingViewController = HostingController(rootView: content)
         self.hostingViewController.view.translatesAutoresizingMaskIntoConstraints = false
         self.style = style
 
