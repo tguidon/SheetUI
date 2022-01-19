@@ -1,5 +1,7 @@
 # SheetUI
 
+![example workflow](https://github.com/tguidon/SheetUI/actions/workflows/swift-test.yml/badge.svg)
+
 Easily present SwiftUI content in a bottom sheet fit for the content it's presenting. No more worrying about SwiftUI hierarchy. SheetUI provides a `ViewModifier` for presenting content that will always be presented above all SwiftUI views.
 
 ## Features
