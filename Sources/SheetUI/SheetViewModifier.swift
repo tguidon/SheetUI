@@ -30,8 +30,15 @@ struct SheetViewModifier<ContentView: View>: ViewModifier {
     }
     
     func body(content: Content) -> some View {
-        content
-            .onChange(of: isPresented, perform: updatePresentation(_:))
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            content
+                .onChange(of: isPresented, perform: updatePresentation(_:))
+        } else {
+            content
+                .sheet(isPresented: $isPresented, onDismiss: self.onDismiss) {
+                    self.contentView
+                }
+        }
     }
     
     /// Update the presentation state of the `sheetViewController`
