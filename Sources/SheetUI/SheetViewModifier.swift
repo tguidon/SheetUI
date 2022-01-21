@@ -44,12 +44,10 @@ struct SheetViewModifier<ContentView: View>: ViewModifier {
     /// Update the presentation state of the `sheetViewController`
     /// - Parameter isPresented: Presents the `sheetViewController` when set to `true`
     private func updatePresentation(_ isPresented: Bool) {
-        guard let rootViewController = UIApplication.shared.getRootViewController() else {
+        guard let presentingViewController = UIApplication.shared.presentingViewController else {
             self.isPresented = false
             return
         }
-        
-        let presentingController = rootViewController.presentedViewController ?? rootViewController
         
         if isPresented {
             sheetViewController = SheetViewController(
@@ -58,7 +56,7 @@ struct SheetViewModifier<ContentView: View>: ViewModifier {
                 content: self.contentView
             )
             if let sheetViewController = self.sheetViewController {
-                presentingController.present(sheetViewController, animated: true)
+                presentingViewController.present(sheetViewController, animated: true)
             }
         } else {
             sheetViewController?.dismiss(animated: true, completion: self.onDismiss)
