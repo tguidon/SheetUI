@@ -9,6 +9,48 @@ import Foundation
 import SwiftUI
 import UIKit
 
+public struct ItemSheetViewModifier<ContentView: View, Item: Identifiable>: ViewModifier {
+    @Binding private var selectedItem: Item?
+    @ViewBuilder private let contentView: (Item) -> ContentView
+
+    public init (
+        selectedItem: Binding<Item?>,
+        @ViewBuilder contentView: @escaping (Item) -> ContentView
+    ) {
+        self._selectedItem = selectedItem
+        self.contentView = contentView
+    }
+    
+    public func body(content: Content) -> some View {
+        ZStack {
+            content
+            
+            if let item = self.selectedItem {
+                ZStack {
+                    Color.orange
+                    contentView(item)
+                }
+                .padding()
+                .onTapGesture {
+                    self.selectedItem = nil
+                }
+            }
+        }
+    }
+}
+
+public extension View {
+    func presentSheet<ContentView: View, Item: Identifiable>(
+        selectedItem: Binding<Item?>,
+        @ViewBuilder contentView: @escaping (Item) -> ContentView
+    ) -> some View {
+        self.modifier(
+            ItemSheetViewModifier(selectedItem: selectedItem, contentView: contentView)
+        )
+    }
+}
+
+
 struct SheetViewModifier<ContentView: View>: ViewModifier {
     @Binding private var isPresented: Bool
     private let style: SheetViewStyle
