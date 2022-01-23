@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 import UIKit
 
-public struct ItemSheetViewModifier<ContentView: View, Item: Identifiable>: ViewModifier {
+public struct ItemSheetViewModifier<ContentView: View, Item: Equatable>: ViewModifier {
     @Binding private var selectedItem: Item?
     @ViewBuilder private let contentView: (Item) -> ContentView
 
@@ -40,7 +40,7 @@ public struct ItemSheetViewModifier<ContentView: View, Item: Identifiable>: View
 }
 
 public extension View {
-    func presentSheet<ContentView: View, Item: Identifiable>(
+    func presentSheet<ContentView: View, Item: Equatable>(
         selectedItem: Binding<Item?>,
         @ViewBuilder contentView: @escaping (Item) -> ContentView
     ) -> some View {
