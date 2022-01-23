@@ -45,8 +45,8 @@ public struct ItemSheetViewModifier<ContentView: View, Item: Equatable>: ViewMod
         }
         
         if let item = item {
-            sheetViewController = SheetViewController(
-                isPresented: .constant(true),
+            sheetViewController = EquatableSheetViewController(
+                selectedItem: self.$selectedItem,
                 style: SheetViewStyle(),
                 content: self.contentView(item)
             )
@@ -120,7 +120,7 @@ struct SheetViewModifier<ContentView: View>: ViewModifier {
         }
         
         if isPresented {
-            sheetViewController = SheetViewController(
+            sheetViewController = IsPresentedSheetViewController(
                 isPresented: self.$isPresented,
                 style: self.style,
                 content: self.contentView
