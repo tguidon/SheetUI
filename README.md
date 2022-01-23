@@ -32,6 +32,16 @@ In Xcode click on your project in the Project Navigator pane. Select your projec
 ```swift
 import SheetUI
 
+/// `SheetItem` is defined as
+/// public protocol SheetItem: Equatable, Identifiable { }
+
+enum DisplayItem: Int, SheetItem {
+    var id: Int { return self.rawValue }
+
+    case menu
+    case settings
+}
+
 struct ContentView: View {
     @State private var isPresented: Bool = false
     @State private var selectedItem: DisplayItem? = nil
@@ -45,12 +55,13 @@ struct ContentView: View {
                 // Can also set Equatable type, helpful with enums
                 // self.selectedItem = DisplayItem.settings
             } label: {
-                Text("Open")
+                Text("Present")
             }
         }
-        .presentSheet(isPresented: $isPresented) {
-            Text("Hello, other world!")
-                .padding()
+        .presentSheet(
+            isPresented: $isPresented
+        ) {
+            Text("Hello, sheet world!").padding()
         }
         .presentSheet(
             selectedItem: $selectedItem,
@@ -59,18 +70,11 @@ struct ContentView: View {
         ) { item in
             switch item {
             case .menu:
-                Text("This is the menu!!!")
-                    .padding()
+                Text("This is the menu!!!").padding()
             case .settings:
-                Text("Settings!!!")
-                    .padding()
+                Text("Settings!!!").padding()
             }
         }
     }
-}
-
-enum DisplayItem: Int, Equatable {
-    case menu
-    case settings
 }
 ```
