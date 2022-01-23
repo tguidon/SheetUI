@@ -11,15 +11,21 @@ import UIKit
 
 public struct ItemSheetViewModifier<ContentView: View, Item: Equatable>: ViewModifier {
     @Binding private var selectedItem: Item?
+    private let style: SheetViewStyle
+    private let onDismiss: (() -> Void)?
     @ViewBuilder private let contentView: (Item) -> ContentView
 
     @State private var sheetViewController: SheetViewController<ContentView>?
 
     public init (
         selectedItem: Binding<Item?>,
+        style: SheetViewStyle,
+        onDismiss: (() -> Void)?,
         @ViewBuilder contentView: @escaping (Item) -> ContentView
     ) {
         self._selectedItem = selectedItem
+        self.style = style
+        self.onDismiss = onDismiss
         self.contentView = contentView
     }
     
@@ -48,7 +54,7 @@ public struct ItemSheetViewModifier<ContentView: View, Item: Equatable>: ViewMod
                 presentingViewController.present(sheetViewController, animated: true)
             }
         } else {
-            sheetViewController?.dismiss(animated: true, completion: nil)
+            sheetViewController?.dismiss(animated: true, completion: self.onDismiss)
             sheetViewController = nil
         }
     }
@@ -57,10 +63,17 @@ public struct ItemSheetViewModifier<ContentView: View, Item: Equatable>: ViewMod
 public extension View {
     func presentSheet<ContentView: View, Item: Equatable>(
         selectedItem: Binding<Item?>,
+        style: SheetViewStyle = .standard,
+        onDismiss: (() -> Void)? = nil,
         @ViewBuilder contentView: @escaping (Item) -> ContentView
     ) -> some View {
         self.modifier(
-            ItemSheetViewModifier(selectedItem: selectedItem, contentView: contentView)
+            ItemSheetViewModifier(
+                selectedItem: selectedItem,
+                style: style,
+                onDismiss: onDismiss,
+                contentView: contentView
+            )
         )
     }
 }
