@@ -13,6 +13,8 @@ public struct ItemSheetViewModifier<ContentView: View, Item: Equatable>: ViewMod
     @Binding private var selectedItem: Item?
     @ViewBuilder private let contentView: (Item) -> ContentView
 
+    @State private var sheetViewController: SheetViewController<ContentView>?
+
     public init (
         selectedItem: Binding<Item?>,
         @ViewBuilder contentView: @escaping (Item) -> ContentView
@@ -24,17 +26,30 @@ public struct ItemSheetViewModifier<ContentView: View, Item: Equatable>: ViewMod
     public func body(content: Content) -> some View {
         ZStack {
             content
-            
-            if let item = self.selectedItem {
-                ZStack {
-                    Color.orange
-                    contentView(item)
-                }
-                .padding()
-                .onTapGesture {
-                    self.selectedItem = nil
-                }
+                .onChange(of: selectedItem, perform: updatePresentation)
+        }
+    }
+    
+    /// Update the presentation state of the `sheetViewController`
+    /// - Parameter isPresented: Presents the `sheetViewController` when set to `true`
+    private func updatePresentation(_ item: Item?) {
+        guard let presentingViewController = UIApplication.shared.presentingViewController else {
+            self.selectedItem = nil
+            return
+        }
+        
+        if let item = item {
+            sheetViewController = SheetViewController(
+                isPresented: .constant(true),
+                style: SheetViewStyle(),
+                content: self.contentView(item)
+            )
+            if let sheetViewController = self.sheetViewController {
+                presentingViewController.present(sheetViewController, animated: true)
             }
+        } else {
+            sheetViewController?.dismiss(animated: true, completion: nil)
+            sheetViewController = nil
         }
     }
 }
