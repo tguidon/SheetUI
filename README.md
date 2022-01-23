@@ -34,6 +34,7 @@ import SheetUI
 
 struct ContentView: View {
     @State private var isPresented: Bool = false
+    @State private var selectedItem: DisplayItem? = nil
     
     var body: some View {
         VStack {
@@ -41,15 +42,35 @@ struct ContentView: View {
                 .padding()
             Button {
                 self.isPresented = true
+                // Can also set Equatable type, helpful with enums
+                // self.selectedItem = DisplayItem.settings
             } label: {
                 Text("Open")
             }
-
         }
         .presentSheet(isPresented: $isPresented) {
             Text("Hello, other world!")
                 .padding()
         }
+        .presentSheet(
+            selectedItem: $selectedItem,
+            style: .standard,
+            onDismiss: nil
+        ) { item in
+            switch item {
+            case .menu:
+                Text("This is the menu!!!")
+                    .padding()
+            case .settings:
+                Text("Settings!!!")
+                    .padding()
+            }
+        }
     }
+}
+
+enum DisplayItem: Int, Equatable {
+    case menu
+    case settings
 }
 ```
